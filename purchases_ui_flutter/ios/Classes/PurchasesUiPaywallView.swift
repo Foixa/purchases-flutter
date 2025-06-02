@@ -125,19 +125,6 @@ class PurchasesUiPaywallView: NSObject, FlutterPlatformView {
     }
 }
 
-extension UIView {
-    var parentViewController: UIViewController? {
-        var responder: UIResponder? = self
-        while let nextResponder = responder?.next {
-            if let viewController = nextResponder as? UIViewController {
-                return viewController
-            }
-            responder = nextResponder
-        }
-        return nil
-    }
-}
-
 @available(iOS 15.0, *)
 extension PurchasesUiPaywallView: PaywallViewControllerDelegateWrapper {
     func paywallViewController(_ controller: PaywallViewController, 
@@ -152,6 +139,10 @@ extension PurchasesUiPaywallView: PaywallViewControllerDelegateWrapper {
             "customerInfo":customerInfoDictionary,
             "storeTransaction":transactionDictionary
         ])
+    }
+
+    func paywallViewControllerDidCancelPurchase(_ controller: PaywallViewController) {
+        _methodChannel.invokeMethod("onPurchaseCancelled", arguments: nil)
     }
 
     func paywallViewController(_ controller: PaywallViewController, 
